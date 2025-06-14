@@ -1,3 +1,4 @@
+import { IsNotEmpty } from 'class-validator';
 import {
   DataTypes,
   Model,
@@ -46,8 +47,11 @@ const modelDefinition = {
   },
 };
 
-export interface VoucherViewQueryDto {
+export class VoucherViewQueryDto {
+  @IsNotEmpty()
   email: string;
+
+  @IsNotEmpty()
   voucherCode: string;
 }
 

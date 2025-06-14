@@ -1,3 +1,4 @@
+import { IsNotEmpty } from 'class-validator';
 import {
   DataTypes,
   Model,
@@ -38,8 +39,11 @@ const modelDefinition = {
   },
 };
 
-export interface SpecialOffersDto {
+export class SpecialOffersDto {
+  @IsNotEmpty()
   name: string;
+
+  @IsNotEmpty()
   discount: number;
 }
 

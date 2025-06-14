@@ -34,12 +34,20 @@ export class AllExceptionsFilter implements ExceptionFilter {
     this.logger.error(
       `[${request.method}] ${request.url} - Status: ${status} - Message: ${message} Exception: ${exception}`,
     );
-
-    response.status(status).json({
-      statusCode: status,
-      message: 'Internal Server Error Please try after sometime',
-      path: request.url,
-      timestamp: new Date().toISOString(),
-    });
+    if (status === 400) {
+      response.status(status).json({
+        statusCode: status,
+        message,
+        path: request.url,
+        timestamp: new Date().toISOString(),
+      });
+    } else {
+      response.status(status).json({
+        statusCode: status,
+        message: 'Internal Server Error Please try after sometime',
+        path: request.url,
+        timestamp: new Date().toISOString(),
+      });
+    }
   }
 }

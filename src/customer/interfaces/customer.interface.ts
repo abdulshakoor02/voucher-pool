@@ -1,3 +1,4 @@
+import { IsEmail, IsNotEmpty } from 'class-validator';
 import {
   DataTypes,
   Model,
@@ -42,8 +43,12 @@ const modelDefinition = {
   },
 };
 
-export interface CustomerDto {
+export class CustomerDto {
+  @IsNotEmpty()
   name: string;
+
+  @IsEmail()
+  @IsNotEmpty()
   email: string;
 }
 
