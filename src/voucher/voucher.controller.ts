@@ -36,7 +36,7 @@ export class VoucherController {
   @Post('verify')
   async VerifyCoupon(@Body() body: VoucherViewQueryDto) {
     try {
-      const res = this.voucherService.verifyCoupon(body);
+      const res = await this.voucherService.verifyCoupon(body);
       return res;
     } catch (error) {
       this.log.error(`failed to verify voucher ${error}`);
@@ -49,10 +49,10 @@ export class VoucherController {
   @Post('getCoupons')
   async getCouponByEmail(@Body() body: { email: string }) {
     try {
-      const res = this.voucherService.getCouponByEmail(body);
+      const res = await this.voucherService.getCouponByEmail(body);
       return res;
     } catch (error) {
-      this.log.error(`failed to verify voucher ${error}`);
+      this.log.error(`failed to get coupons by email ${error}`);
       throw new InternalServerErrorException(
         `Internal server error failed to verify voucher`,
       );
