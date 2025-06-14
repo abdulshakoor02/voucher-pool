@@ -4,7 +4,9 @@ import {
   InferAttributes,
   InferCreationAttributes,
 } from 'sequelize';
+import { CustomerModel } from 'src/customer/interfaces';
 import { dbAdapter } from 'src/database/database';
+import { SpecialOffersModel } from 'src/specialOffers/interfaces';
 
 const modelDefinition = {
   name: 'vouchers',
@@ -20,12 +22,20 @@ const modelDefinition = {
       allowNull: false,
     },
     customerId: {
-      type: DataTypes.STRING,
+      type: DataTypes.UUID,
       allowNull: false,
+      references: {
+        model: 'customers',
+        key: 'id',
+      },
     },
     offerId: {
-      type: DataTypes.STRING,
+      type: DataTypes.UUID,
       allowNull: false,
+      references: {
+        model: 'special_offers',
+        key: 'id',
+      },
     },
     expirattionDate: {
       type: DataTypes.STRING,
@@ -34,11 +44,10 @@ const modelDefinition = {
     used: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
+      defaultValue: false,
     },
     usedDate: {
       type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: false,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -65,7 +74,6 @@ export interface IVouchersModel
     InferAttributes<IVouchersModel>,
     InferCreationAttributes<IVouchersModel>
   > {
-  // Some fields are optional when calling UserModel.create() or UserModel.build()
   id: string;
   voucherCode: string;
   customerId: string;
@@ -86,3 +94,6 @@ export const VouchersModel = dbAdapter.define<IVouchersModel>(
     timestamps: true,
   },
 );
+
+VouchersModel.belongsTo(CustomerModel, { foreignKey: 'customerId' });
+VouchersModel.belongsTo(SpecialOffersModel, { foreignKey: 'offerId' });

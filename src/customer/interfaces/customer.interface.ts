@@ -5,6 +5,9 @@ import {
   InferCreationAttributes,
 } from 'sequelize';
 import { dbAdapter } from 'src/database/database';
+import { LoggerService } from 'src/logger/logger.service';
+
+const log = new LoggerService();
 
 const modelDefinition = {
   name: 'customer',
@@ -66,3 +69,23 @@ export const CustomerModel = dbAdapter.define<ICustomerModel>(
     timestamps: true,
   },
 );
+
+CustomerModel.addHook('beforeCreate', (instance: ICustomerModel) => {
+  log.info(`creating customer with data ${JSON.stringify(instance.toJSON())}`);
+});
+
+CustomerModel.addHook('afterCreate', (instance: ICustomerModel) => {
+  log.info(`customer created ${JSON.stringify(instance.toJSON())}`);
+});
+
+CustomerModel.addHook('beforeUpdate', (instance: ICustomerModel) => {
+  log.info(`updating customer with ${JSON.stringify(instance.toJSON())}`);
+});
+
+CustomerModel.addHook('afterUpdate', (instance: ICustomerModel) => {
+  log.info(`customer updated ${JSON.stringify(instance.toJSON())}`);
+});
+
+CustomerModel.addHook('beforeDestroy', (instance: ICustomerModel) => {
+  log.warn(`deleteing customer ${JSON.stringify(instance.toJSON())}`);
+});
