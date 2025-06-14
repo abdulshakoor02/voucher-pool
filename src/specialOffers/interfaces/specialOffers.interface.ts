@@ -7,7 +7,7 @@ import {
 import { dbAdapter } from 'src/database/database';
 
 const modelDefinition = {
-  name: 'customer',
+  name: 'specialOffers',
   define: {
     id: {
       type: DataTypes.UUID,
@@ -19,10 +19,9 @@ const modelDefinition = {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    email: {
-      type: DataTypes.STRING,
+    discount: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      unique: true,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -39,26 +38,26 @@ const modelDefinition = {
   },
 };
 
-export interface CustomerDto {
+export interface SpecialOffersDto {
   name: string;
-  email: string;
+  discount: number;
 }
 
-export interface ICustomerModel
+export interface ISpecialOffersModel
   extends Model<
-    InferAttributes<ICustomerModel>,
-    InferCreationAttributes<ICustomerModel>
+    InferAttributes<ISpecialOffersModel>,
+    InferCreationAttributes<ISpecialOffersModel>
   > {
   // Some fields are optional when calling UserModel.create() or UserModel.build()
   id: string;
   name: string;
-  email: string;
+  discount: number;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
 }
 
-export const CustomerModel = dbAdapter.define<ICustomerModel>(
+export const SpecialOffersModel = dbAdapter.define<ISpecialOffersModel>(
   modelDefinition.name,
   modelDefinition.define,
   {

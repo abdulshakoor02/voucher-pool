@@ -1,0 +1,1 @@
+export * from './specialOffers.interface';

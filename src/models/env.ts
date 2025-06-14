@@ -12,6 +12,7 @@ type Env = {
     min: number;
     idle: number;
   };
+  voucherLimit: number;
 };
 
 export { Env };

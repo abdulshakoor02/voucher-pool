@@ -15,4 +15,5 @@ export const env: Env = {
     min: Number(process.env.DB_POOL_MIN)! || 0,
     idle: Number(process.env.DB_POOL_IDLE)! || 10000,
   },
+  voucherLimit: Number(process.env.CUSTOMER_VOUCHER_LIMIT),
 };

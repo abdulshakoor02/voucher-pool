@@ -7,7 +7,7 @@ import {
 import { dbAdapter } from 'src/database/database';
 
 const modelDefinition = {
-  name: 'customer',
+  name: 'voucherJob',
   define: {
     id: {
       type: DataTypes.UUID,
@@ -15,14 +15,14 @@ const modelDefinition = {
       primaryKey: true,
       allowNull: false,
     },
-    name: {
+    jobName: {
       type: DataTypes.STRING,
+      unique: true,
       allowNull: false,
     },
-    email: {
+    status: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -39,26 +39,26 @@ const modelDefinition = {
   },
 };
 
-export interface CustomerDto {
-  name: string;
-  email: string;
+export interface VoucherJobDto {
+  jobName: string;
+  status: string;
 }
 
-export interface ICustomerModel
+export interface IVoucherJobModel
   extends Model<
-    InferAttributes<ICustomerModel>,
-    InferCreationAttributes<ICustomerModel>
+    InferAttributes<IVoucherJobModel>,
+    InferCreationAttributes<IVoucherJobModel>
   > {
   // Some fields are optional when calling UserModel.create() or UserModel.build()
   id: string;
-  name: string;
-  email: string;
+  jobName: string;
+  status: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
 }
 
-export const CustomerModel = dbAdapter.define<ICustomerModel>(
+export const VoucherJobModel = dbAdapter.define<IVoucherJobModel>(
   modelDefinition.name,
   modelDefinition.define,
   {

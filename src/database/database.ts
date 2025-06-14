@@ -6,7 +6,7 @@ export const dbAdapter = new Sequelize(
   env.database.dbUser,
   env.database.dbPassword,
   {
-    logging: false,
+    logging: true,
     port: env.database.dbPort,
     host: env.database.host,
     dialect: 'postgres',

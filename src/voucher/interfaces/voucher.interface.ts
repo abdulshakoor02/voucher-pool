@@ -7,7 +7,7 @@ import {
 import { dbAdapter } from 'src/database/database';
 
 const modelDefinition = {
-  name: 'customer',
+  name: 'vouchers',
   define: {
     id: {
       type: DataTypes.UUID,
@@ -15,14 +15,30 @@ const modelDefinition = {
       primaryKey: true,
       allowNull: false,
     },
-    name: {
+    voucherCode: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    email: {
+    customerId: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+    },
+    offerId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    expirattionDate: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    used: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+    usedDate: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: false,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -39,26 +55,30 @@ const modelDefinition = {
   },
 };
 
-export interface CustomerDto {
-  name: string;
-  email: string;
+export interface VouchersDto {
+  specialOfferId: string;
+  expirationDate: string;
 }
 
-export interface ICustomerModel
+export interface IVouchersModel
   extends Model<
-    InferAttributes<ICustomerModel>,
-    InferCreationAttributes<ICustomerModel>
+    InferAttributes<IVouchersModel>,
+    InferCreationAttributes<IVouchersModel>
   > {
   // Some fields are optional when calling UserModel.create() or UserModel.build()
   id: string;
-  name: string;
-  email: string;
+  voucherCode: string;
+  customerId: string;
+  offerId: string;
+  expirattionDate: string;
+  used: boolean;
+  usedDate: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
 }
 
-export const CustomerModel = dbAdapter.define<ICustomerModel>(
+export const VouchersModel = dbAdapter.define<IVouchersModel>(
   modelDefinition.name,
   modelDefinition.define,
   {
