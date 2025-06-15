@@ -11,9 +11,16 @@ import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 // ConfigService import removed as it's not used.
 import { VoucherViewQueryDto } from './interfaces/voucherView.interface'; // Added missing import
+import { BloomFilterService } from '../bloomFilters/bloom.service';
 
 // Mocking external modules and dependencies
 jest.mock('../logger/logger.service');
+jest.mock('../bloomFilters/bloom.service', () => ({
+  BloomFilterService: jest.fn().mockImplementation(() => ({
+    has: jest.fn(),
+    add: jest.fn(),
+  })),
+}));
 
 // Helper function for mocking Sequelize models
 // Must be defined before jest.mock calls that use it due to hoisting
@@ -114,6 +121,7 @@ describe('VoucherService', () => {
   let mockVoucherViewModel: jest.Mocked<typeof VoucherViewModel>;
   let mockUuidv4: jest.Mock; // Changed type to jest.Mock
   let mockMoment: jest.Mocked<any>;
+  let mockBloomFilterService: jest.Mocked<BloomFilterService>;
   // Remove ConfigService as env is imported directly
   // let mockConfigService: jest.Mocked<ConfigService>;
 
@@ -159,12 +167,14 @@ describe('VoucherService', () => {
         VoucherService,
         LoggerService, // Real LoggerService will be auto-mocked by jest.mock at top
         // ConfigService removed
+        BloomFilterService,
       ],
     }).compile();
 
     service = module.get<VoucherService>(VoucherService);
     loggerService = module.get(LoggerService);
     // mockConfigService removed
+    mockBloomFilterService = module.get(BloomFilterService);
 
     // Reset all mocks that might have been called in previous tests
     // jest.clearAllMocks() should be called before each test or specified in Jest config
@@ -200,15 +210,77 @@ describe('VoucherService', () => {
   });
 
   describe('generateCoupon', () => {
-    it('should return an uppercase string without hyphens and call uuidv4', () => {
+    it('should return an uppercase string without hyphens and call uuidv4, bloomFilterService.has and bloomFilterService.add', () => {
       const mockUUID = 'a1b2c3d4-e5f6-7890-1234-567890abcdef';
       mockUuidv4.mockReturnValue(mockUUID);
 
       const coupon = service.generateCoupon();
 
       expect(mockUuidv4).toHaveBeenCalledTimes(1);
+      expect(mockBloomFilterService.has).toHaveBeenCalledTimes(1);
+      expect(mockBloomFilterService.has).toHaveBeenCalledWith(
+        mockUUID.replace(/-/g, ''),
+      );
+      expect(mockBloomFilterService.add).toHaveBeenCalledTimes(1);
+      expect(mockBloomFilterService.add).toHaveBeenCalledWith(
+        mockUUID.replace(/-/g, ''),
+      );
       expect(coupon).toBe('A1B2C3D4E5F678901234567890ABCDEF');
       expect(typeof coupon).toBe('string');
+    });
+
+    it('should generate a unique coupon after a few attempts', () => {
+      const mockUUID1 = '11111111-e5f6-7890-1234-567890abcdef';
+      const mockUUID2 = '22222222-e5f6-7890-1234-567890abcdef';
+      const mockUUID3 = '33333333-e5f6-7890-1234-567890abcdef';
+      mockUuidv4
+        .mockReturnValueOnce(mockUUID1)
+        .mockReturnValueOnce(mockUUID2)
+        .mockReturnValueOnce(mockUUID3);
+
+      mockBloomFilterService.has
+        .mockReturnValueOnce(true) // First attempt, coupon exists
+        .mockReturnValueOnce(true) // Second attempt, coupon exists
+        .mockReturnValueOnce(false); // Third attempt, coupon is unique
+
+      const coupon = service.generateCoupon();
+
+      expect(mockUuidv4).toHaveBeenCalledTimes(3);
+      expect(mockBloomFilterService.has).toHaveBeenCalledTimes(3);
+      expect(mockBloomFilterService.has).toHaveBeenNthCalledWith(
+        1,
+        mockUUID1.replace(/-/g, ''),
+      );
+      expect(mockBloomFilterService.has).toHaveBeenNthCalledWith(
+        2,
+        mockUUID2.replace(/-/g, ''),
+      );
+      expect(mockBloomFilterService.has).toHaveBeenNthCalledWith(
+        3,
+        mockUUID3.replace(/-/g, ''),
+      );
+      expect(mockBloomFilterService.add).toHaveBeenCalledTimes(1);
+      expect(mockBloomFilterService.add).toHaveBeenCalledWith(
+        mockUUID3.replace(/-/g, ''),
+      );
+      expect(coupon).toBe(mockUUID3.replace(/-/g, '').toUpperCase());
+    });
+
+    it('should throw an error if maxAttempts is reached', async () => {
+      const mockUUID = 'a1b2c3d4-e5f6-7890-1234-567890abcdef';
+      mockUuidv4.mockReturnValue(mockUUID);
+      mockBloomFilterService.has.mockReturnValue(true); // Always return true, coupon exists
+
+      try {
+        service.generateCoupon();
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toBe('Failed to generate unique coupon');
+      }
+
+      expect(mockUuidv4).toHaveBeenCalledTimes(10); // Default maxAttempts is 10
+      expect(mockBloomFilterService.has).toHaveBeenCalledTimes(10);
+      expect(mockBloomFilterService.add).not.toHaveBeenCalled();
     });
   });
 
