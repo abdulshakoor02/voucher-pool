@@ -1,0 +1,39 @@
+services:
+  voucher_pool:
+    build:
+      context: ./erp_backend
+    image: voucher_pool
+    restart: always
+    container_name: voucher_pool
+    env_file: .env
+    ports:
+      - "${PORT}:${PORT}"
+    networks:
+      - voucher_pool_network
+    volumes:
+      - ./:/app/:delegated 
+    command:
+      - make
+      - run
+    depends:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres-server
+    restart: always 
+    environment:
+      POSTGRES_USER: ${POSTGRES_DB_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    env_file: .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - voucher_pool_network
+
+networks:
+  voucher_pool_network:
+    driver: bridge
