@@ -175,7 +175,10 @@ export class VoucherService {
 
     if (res !== null && res.used === false) {
       if (res.expirattionDate > moment().format('X')) {
-        await VouchersModel.update({ used: true }, { where: { id: res.id } });
+        await VouchersModel.update(
+          { used: true, usedDate: moment().format('X') },
+          { where: { id: res.id } },
+        );
         await t.commit();
         return { discount: res.discount };
       } else {
