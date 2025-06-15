@@ -1,4 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 import {
   DataTypes,
   Model,
@@ -66,9 +67,17 @@ const modelDefinition = {
 };
 
 export class VouchersDto {
+  @ApiProperty({
+    description: 'The ID of the special offer to link the voucher to',
+    example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+  })
   @IsNotEmpty()
   specialOfferId: string;
 
+  @ApiProperty({
+    description: 'The expiration date of the voucher',
+    example: '2024-12-31',
+  })
   @IsNotEmpty()
   expirationDate: string;
 }

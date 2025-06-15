@@ -1,8 +1,10 @@
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { CustomerController } from './customer.controller';
 import { LoggerService } from '../logger/logger.service';
-import { CustomerModel, ICustomerModel } from '../customer/interfaces/customer.interface'; // Adjusted import
+import {
+  CustomerModel,
+  ICustomerModel,
+} from '../customer/interfaces/customer.interface'; // Adjusted import
 import { InternalServerErrorException } from '@nestjs/common';
 
 // Actual CustomerModel is a Sequelize model with static methods.
@@ -38,7 +40,7 @@ describe('CustomerController', () => {
     // Spy on the static 'create' method of CustomerModel
     // The implementation of CustomerModel.create comes from Sequelize, so we mock its return value.
     customerModelCreateSpy = jest.spyOn(CustomerModel, 'create');
-    
+
     // Reset mocks before each test
     mockLoggerService.error.mockClear();
     mockLoggerService.log.mockClear();
@@ -77,9 +79,13 @@ describe('CustomerController', () => {
       increment: jest.fn(),
       decrement: jest.fn(),
       validate: jest.fn(),
-      toJSON: jest.fn(() => ({ id: 'mock-uuid-123', ...customerData, createdAt: new Date(), updatedAt: new Date() })),
+      toJSON: jest.fn(() => ({
+        id: 'mock-uuid-123',
+        ...customerData,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })),
     } as unknown as ICustomerModel;
-
 
     it('should create a customer successfully', async () => {
       customerModelCreateSpy.mockResolvedValue(createdCustomerMock);
@@ -88,7 +94,7 @@ describe('CustomerController', () => {
 
       expect(CustomerModel.create).toHaveBeenCalledWith(customerData);
       // The controller returns the direct result from CustomerModel.create
-      expect(result).toEqual(createdCustomerMock); 
+      expect(result).toEqual(createdCustomerMock);
       // Controller does not log on success
       expect(mockLoggerService.log).not.toHaveBeenCalled();
       expect(mockLoggerService.error).not.toHaveBeenCalled();

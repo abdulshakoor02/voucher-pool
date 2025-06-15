@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DbService } from './database/database.service';
 import { VoucherService } from './voucher/voucher.service';
@@ -12,12 +11,7 @@ import { LoggerService } from './logger/logger.service';
 
 @Module({
   imports: [],
-  controllers: [
-    AppController,
-    CustomerController,
-    VoucherController,
-    SpecialOffersController,
-  ],
+  controllers: [CustomerController, VoucherController, SpecialOffersController],
   providers: [
     AppService,
     DbService,

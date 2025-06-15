@@ -1,4 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 import {
   DataTypes,
   Model,
@@ -48,9 +49,17 @@ const modelDefinition = {
 };
 
 export class VoucherViewQueryDto {
+  @ApiProperty({
+    description: 'The email address of the customer to verify the voucher for',
+    example: 'jane.doe@example.com',
+  })
   @IsNotEmpty()
   email: string;
 
+  @ApiProperty({
+    description: 'The voucher code to verify',
+    example: 'VOUCHER123',
+  })
   @IsNotEmpty()
   voucherCode: string;
 }
