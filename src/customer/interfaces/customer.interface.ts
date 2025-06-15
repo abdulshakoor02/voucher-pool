@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 import {
   DataTypes,
   Model,
@@ -44,9 +45,17 @@ const modelDefinition = {
 };
 
 export class CustomerDto {
+  @ApiProperty({
+    description: 'The name of the customer',
+    example: 'John Doe',
+  })
   @IsNotEmpty()
   name: string;
 
+  @ApiProperty({
+    description: 'The email address of the customer',
+    example: 'john.doe@example.com',
+  })
   @IsEmail()
   @IsNotEmpty()
   email: string;

@@ -171,7 +171,7 @@ describe('VoucherController', () => {
       );
       // loggerService.error should now be called with the corrected log message.
       expect(loggerService.error).toHaveBeenCalledWith(
-        `failed to get coupons by email ${error}`,
+        `failed to retrieve vouchers for email ${getCouponDto.email}: ${error}`,
       );
     });
   });

@@ -1,4 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 import {
   DataTypes,
   Model,
@@ -40,9 +41,17 @@ const modelDefinition = {
 };
 
 export class SpecialOffersDto {
+  @ApiProperty({
+    description: 'The name of the special offer',
+    example: 'Summer Discount',
+  })
   @IsNotEmpty()
   name: string;
 
+  @ApiProperty({
+    description: 'The discount percentage for the special offer',
+    example: 10,
+  })
   @IsNotEmpty()
   discount: number;
 }
