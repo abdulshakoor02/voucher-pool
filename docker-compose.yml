@@ -1,7 +1,7 @@
 services:
   voucher_pool:
     build:
-      context: ./erp_backend
+      context: ./
     image: voucher_pool
     restart: always
     container_name: voucher_pool
@@ -12,9 +12,7 @@ services:
       - voucher_pool_network
     volumes:
       - ./:/app/:delegated 
-    command:
-      - make
-      - run
+    command: make run
     depends:
       - postgres
 
