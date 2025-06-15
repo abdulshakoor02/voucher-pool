@@ -109,3 +109,9 @@ To remove the named volume `data` (where PostgreSQL stores its data), you can ru
 docker-compose down -v
 ```
 Be cautious with this command as it will delete your database data.
+
+## Roadmap
+
+*   Implement database migrations for tables and indexes using Sequelize (replacing `table.sync`).
+*   Add end-to-end (e2e) tests for the complete application.
+*   Integrate a messaging queue to produce messages when coupons are generated. This will enable a notification service to consume these messages and send notifications to users.
