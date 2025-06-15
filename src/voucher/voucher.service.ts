@@ -14,15 +14,26 @@ import { dbAdapter } from '../database/database';
 import { Transaction } from 'sequelize';
 import { env } from '../env';
 import { LoggerService } from 'src/logger/logger.service';
+import { BloomFilterService } from 'src/bloomFilters/bloom.service';
 
 @Injectable()
 export class VoucherService {
-  constructor(private readonly log: LoggerService) {}
+  constructor(
+    private readonly log: LoggerService,
+    private readonly bloomFilter: BloomFilterService,
+  ) {}
 
-  generateCoupon(): string {
-    let coupon: any = uuidv4();
-    coupon = coupon.split('-').join('');
-    return coupon.toUpperCase();
+  generateCoupon(maxAttempts = 10): string {
+    for (let i = 0; i < maxAttempts; i++) {
+      let coupon: any = uuidv4();
+      coupon = coupon.split('-').join('');
+      if (!this.bloomFilter.has(coupon)) {
+        this.bloomFilter.add(coupon);
+        return coupon.toUpperCase();
+      }
+    }
+
+    throw new Error('Failed to generate unique coupon');
   }
 
   async genreateVoucherForAllCustomer(

@@ -21,6 +21,7 @@ const modelDefinition = {
     },
     voucherCode: {
       type: DataTypes.STRING,
+      unique: true,
       allowNull: false,
     },
     customerId: {

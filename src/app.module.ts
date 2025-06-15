@@ -8,6 +8,7 @@ import { VoucherController } from './voucher/voucher.controller';
 import { SpecialOffersController } from './specialOffers/specialOffers.controller';
 import { LoggingInterceptor } from './http-interceptor/logging.interceptor';
 import { LoggerService } from './logger/logger.service';
+import { BloomFilterService } from './bloomFilters/bloom.service';
 
 @Module({
   imports: [],
@@ -17,6 +18,7 @@ import { LoggerService } from './logger/logger.service';
     DbService,
     VoucherService,
     LoggerService,
+    BloomFilterService,
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
   ],
 })
