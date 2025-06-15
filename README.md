@@ -34,6 +34,8 @@ Before you begin, ensure you have the following installed:
     *   `CUSTOMER_VOUCHER_LIMIT`: max voucher to be created at a time to avoid db overload (Example: `5`)
     *   `POSTGRES_DB_USER`: User for Postgres db docker image. This is used for the PostgreSQL service setup. (Example: `pgadmin`)
     *   `POSTGRES_DB_PASSWORD`: password for Postgres db docker image. This is used for the PostgreSQL service setup. (Example: `adminpassword`)
+    *   `API_RATE_TTL`: ttl for api rate limit (Example: `60`)
+    *   `API_RATE_LIMIT`: no of requests per ttl (Example: `1000`)
 
     **Example `.env` for local development:**
     ```env
@@ -49,6 +51,8 @@ Before you begin, ensure you have the following installed:
     CUSTOMER_VOUCHER_LIMIT=5
     POSTGRES_DB_USER=pgadmin
     POSTGRES_DB_PASSWORD=adminpassword
+    API_RATE_TTL=60
+    API_RATE_LIMIT=1000
     ```
 
 ## Running the Application
@@ -80,6 +84,12 @@ The `docker-compose.yml` file defines the following services:
     *   It uses the official `postgres:latest` image.
     *   Database files will be persisted in a Docker volume named `data` (relative to your project root, e.g., `./data:/var/lib/postgresql/data`), so your data will remain even if you stop and remove the container.
     *   The environment variables `POSTGRES_DB_USER`, `POSTGRES_DB_PASSWORD`, and `POSTGRES_DB` (which uses the value of `DB_NAME` from the `.env` file) are used to initialize the database.
+
+## Security
+
+### Rate Limiting
+
+This application implements rate limiting to protect against brute-force attacks and ensure fair usage. By default, clients are limited to 'set in env' requests per 'set in env' seconds** per endpoint. If this limit is exceeded, a `429 Too Many Requests` error will be returned.
 
 ## Development
 

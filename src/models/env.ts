@@ -13,6 +13,8 @@ type Env = {
     idle: number;
   };
   voucherLimit: number;
+  apiRateTTL: number;
+  apiRateLimit: number;
 };
 
 export { Env };

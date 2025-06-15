@@ -16,4 +16,6 @@ export const env: Env = {
     idle: Number(process.env.DB_POOL_IDLE)! || 10000,
   },
   voucherLimit: Number(process.env.CUSTOMER_VOUCHER_LIMIT),
+  apiRateTTL: Number(process.env.API_RATE_TTL),
+  apiRateLimit: Number(process.env.API_RATE_LIMIT),
 };

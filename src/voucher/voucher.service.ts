@@ -195,6 +195,7 @@ export class VoucherService {
     const { email } = couponQuery;
     const currentTime = moment().format('X');
     const res = await VoucherViewModel.findAll({
+      attributes: ['voucherCode', 'special_offer'],
       where: { email, expirattionDate: { [Op.gt]: currentTime }, used: false },
     });
 
